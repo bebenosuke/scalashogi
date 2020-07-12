@@ -24,7 +24,7 @@ case class Piece(color: Color, role: Role) {
         from.color != to.color && {
           val xd = from xDist to
           val yd = from yDist to
-          (xd == 1 && yd == 2) || (xd == 2 && yd == 1)
+          (xd == 1 && yd == 2) // march only forward
         }
       case Pawn => Piece.pawnEyes(color, from, to)
     }

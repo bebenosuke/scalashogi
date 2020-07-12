@@ -28,7 +28,7 @@ object StartingPosition {
       List(
         StartingPosition(
           "B00",
-          "King's Pawn",
+          "King's Pawnin",
           "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 1 1",
           "King's_Pawn_Game",
           "1. e4",

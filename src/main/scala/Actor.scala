@@ -18,6 +18,7 @@ final case class Actor(
 
   /** The moves without taking defending the king into account */
   def trustedMoves(withCastle: Boolean): List[Move] = {
+    println("trustedmoves")
     val moves = piece.role match {
       case Pawn =>
         pawnDir(pos) map { next =>
