@@ -16,11 +16,7 @@ object InsufficientMatingMaterial {
   /*
    * Returns true if a pawn cannot progress forward because it is blocked by a pawn
    */
-  def pawnBlockedByPawn(pawn: Actor, board: Board) =
-    pawn.moves.isEmpty && {
-      val blockingPosition = Actor.posAheadOfPawn(pawn.pos, pawn.piece.color)
-      blockingPosition.flatMap(board.apply).exists(_.is(Pawn))
-    }
+  def pawnBlockedByPawn(pawn: Actor, board: Board) = false
 
   /*
    * Determines whether a board position is an automatic draw due to neither player
@@ -55,7 +51,7 @@ object InsufficientMatingMaterial {
     kingsAndMinorsOnlyOfColor && ((nonKingRolesOfColor toList).distinct match {
       case Nil => true
       case List(Knight) =>
-        (nonKingRolesOfColor.size == 1) && (rolesOfOpponentColor filter (King !=) filter (Queen !=) isEmpty)
+        (nonKingRolesOfColor.size == 1) && (rolesOfOpponentColor filter (King !=) filter (Lance !=) isEmpty)
       case List(Bishop) =>
         !(rolesOfOpponentColor.exists(r => r == Knight || r == Pawn) || bishopsOnOppositeColors(board))
       case _ => false

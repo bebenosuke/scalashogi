@@ -18,8 +18,8 @@ sealed trait Color {
   def pawn   = this - Pawn
   def bishop = this - Bishop
   def knight = this - Knight
+  def lance  = this - Lance
   def rook   = this - Rook
-  def queen  = this - Queen
   def king   = this - King
 
   val white = this == Color.White

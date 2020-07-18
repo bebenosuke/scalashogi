@@ -46,7 +46,6 @@ object Hash {
       case Knight => 1
       case Bishop => 2
       case Rook   => 3
-      case Queen  => 4
       case King   => 5
     }
 
@@ -91,11 +90,6 @@ object Hash {
 
     // Hash in special three-check data.
     val hchecks = board.variant match {
-      case variant.ThreeCheck =>
-        val blackCount   = math.min(situation.history.checkCount.black, 3)
-        val whiteCount   = math.min(situation.history.checkCount.white, 3)
-        val hblackchecks = if (blackCount > 0) hep ^ table.threeCheckMasks(blackCount - 1) else hep
-        if (whiteCount > 0) hblackchecks ^ table.threeCheckMasks(whiteCount + 2) else hblackchecks
       case _ => hep
     }
 

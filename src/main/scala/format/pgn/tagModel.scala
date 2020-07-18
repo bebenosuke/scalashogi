@@ -32,8 +32,7 @@ case class Tags(value: List[Tag]) extends AnyVal {
 
   def variant: Option[chess.variant.Variant] =
     apply(_.Variant).map(_.toLowerCase).flatMap {
-      case "chess 960" | "fischerandom" | "fischerrandom" => chess.variant.Chess960.some
-      case name                                           => chess.variant.Variant byName name
+      case name => chess.variant.Variant byName name
     }
 
   def anyDate: Option[String] = apply(_.UTCDate) orElse apply(_.Date)

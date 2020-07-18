@@ -189,10 +189,7 @@ object Forsyth {
       game.situation.enPassantSquare.map(_.toString).getOrElse("-"),
       game.halfMoveClock,
       game.fullMoveNumber
-    ) ::: {
-      if (game.board.variant == variant.ThreeCheck) List(exportCheckCount(game.board))
-      else List()
-    }
+    ) ::: List()
   } mkString " "
 
   def exportStandardPositionTurnCastlingEp(situation: Situation): String =

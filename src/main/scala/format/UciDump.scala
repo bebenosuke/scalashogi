@@ -22,8 +22,8 @@ object UciDump {
     mod match {
       case Left(m) =>
         m.castle.fold(m.toUci.uci) {
-          case ((kf, kt), (rf, _)) if kf == kt || variant.chess960 || variant.fromPosition => kf.key + rf.key
-          case ((kf, kt), _)                                                               => kf.key + kt.key
+          case ((kf, kt), (rf, _)) if kf == kt || variant.fromPosition => kf.key + rf.key
+          case ((kf, kt), _)                                           => kf.key + kt.key
         }
       case Right(d) => d.toUci.uci
     }

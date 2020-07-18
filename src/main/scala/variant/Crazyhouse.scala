@@ -92,14 +92,14 @@ case object Crazyhouse
         case Some(next) if situation.board(next).isDefined        => Nil
         case Some(next)                                           => forward(next, dir, next :: squares)
       }
-    Queen.dirs flatMap { forward(kingPos, _, Nil) } filter { square =>
+    King.dirs flatMap { forward(kingPos, _, Nil) } filter { square =>
       situation.board.place(Piece(situation.color, Knight), square) exists { defended =>
         !defended.check(situation.color)
       }
     }
   }
 
-  val storableRoles = List(Pawn, Knight, Bishop, Rook, Queen)
+  val storableRoles = List(Pawn, Knight, Bishop, Rook, Lance)
 
   case class Data(
       pockets: Pockets,

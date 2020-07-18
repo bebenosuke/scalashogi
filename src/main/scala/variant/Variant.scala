@@ -19,22 +19,15 @@ abstract class Variant private[variant] (
 
   def pieces: Map[Pos, Piece]
 
-  def standard      = this == Standard
-  def chess960      = this == Chess960
-  def fromPosition  = this == FromPosition
-  def kingOfTheHill = this == KingOfTheHill
-  def threeCheck    = this == ThreeCheck
-  def antichess     = this == Antichess
-  def atomic        = this == Atomic
-  def horde         = this == Horde
-  def racingKings   = this == RacingKings
-  def crazyhouse    = this == Crazyhouse
+  def standard     = this == Standard
+  def fromPosition = this == FromPosition
+  def crazyhouse   = this == Crazyhouse
 
   def exotic = !standard
 
   def allowsCastling = !castles.isEmpty
 
-  protected val backRank = Vector(Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook)
+  protected val backRank = Vector(Rook, Knight, Bishop, Lance, King, Bishop, Knight, Rook)
 
   def castles: Castles = Castles.all
 
@@ -43,7 +36,7 @@ abstract class Variant private[variant] (
   def isValidPromotion(promotion: Option[PromotableRole]) =
     promotion match {
       case None                                 => true
-      case Some(Queen | Rook | Knight | Bishop) => true
+      case Some(Lance | Rook | Knight | Bishop) => true
       case _                                    => false
     }
 
@@ -54,7 +47,7 @@ abstract class Variant private[variant] (
       }
       .to(Map)
 
-  // Optimised for performance
+  // Optimized for performance
   def pieceThreatened(board: Board, color: Color, to: Pos, filter: Piece => Boolean = _ => true): Boolean = {
     board.pieces exists {
       case (pos, piece) if piece.color == color && filter(piece) && piece.eyes(pos, to) =>
@@ -175,9 +168,9 @@ abstract class Variant private[variant] (
 
   def valid(board: Board, strict: Boolean) = Color.all forall validSide(board, strict) _
 
-  val roles = List(Rook, Knight, King, Bishop, King, Queen, Pawn)
+  val roles = List(Rook, Knight, King, Bishop, King, Lance, Pawn)
 
-  val promotableRoles: List[PromotableRole] = List(Queen, Rook, Bishop, Knight)
+  val promotableRoles: List[PromotableRole] = List(Lance, Rook, Bishop, Knight)
 
   lazy val rolesByPgn: Map[Char, Role] = roles
     .map { r =>
@@ -206,14 +199,7 @@ object Variant {
   val all = List(
     Standard,
     Crazyhouse,
-    Chess960,
-    FromPosition,
-    KingOfTheHill,
-    ThreeCheck,
-    Antichess,
-    Atomic,
-    Horde,
-    RacingKings
+    FromPosition
   )
   val byId = all map { v =>
     (v.id, v)
@@ -236,16 +222,11 @@ object Variant {
 
   val openingSensibleVariants: Set[Variant] = Set(
     chess.variant.Standard,
-    chess.variant.Crazyhouse,
-    chess.variant.ThreeCheck,
-    chess.variant.KingOfTheHill
+    chess.variant.Crazyhouse
   )
 
   val divisionSensibleVariants: Set[Variant] = Set(
     chess.variant.Standard,
-    chess.variant.Chess960,
-    chess.variant.ThreeCheck,
-    chess.variant.KingOfTheHill,
     chess.variant.FromPosition
   )
 
