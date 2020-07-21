@@ -107,10 +107,10 @@ case class Board(
 
   def promote(pos: Pos): Option[Board] =
     for {
-      pawn <- apply(pos)
-      if pawn is Pawn
+      piece <- apply(pos)
+      if piece.isInstanceOf[PromotableRole]
       b2 <- take(pos)
-      b3 <- b2.place(pawn.color.lance, pos)
+      b3 <- b2.place(piece.color.lance, pos) //todo
     } yield b3
 
   def castles: Castles = history.castles

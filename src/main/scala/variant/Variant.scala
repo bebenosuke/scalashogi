@@ -19,21 +19,29 @@ abstract class Variant private[variant] (
 
   def pieces: Map[Pos, Piece]
 
-  def standard     = this == Standard
-  def fromPosition = this == FromPosition
-  def crazyhouse   = this == Crazyhouse
+  def standard      = this == Standard
+  def chess960      = this == Chess960
+  def fromPosition  = this == FromPosition
+  def kingOfTheHill = this == KingOfTheHill
+  def threeCheck    = this == ThreeCheck
+  def antichess     = this == Antichess
+  def atomic        = this == Atomic
+  def horde         = this == Horde
+  def racingKings   = this == RacingKings
+  def crazyhouse    = this == Crazyhouse
 
   def exotic = !standard
 
   def allowsCastling = !castles.isEmpty
 
-  protected val backRank = Vector(Rook, Knight, Bishop, Lance, King, Bishop, Knight, Rook)
+  protected val backRank  = Vector(Lance, Knight, Silver, Gold, King, Gold, Silver, Knight, Lance)
+  protected val backRank2 = Vector(Rook, Bishop)
 
   def castles: Castles = Castles.all
 
   def initialFen = format.Forsyth.initial
 
-  def isValidPromotion(promotion: Option[PromotableRole]) =
+  def isValidPromotion(promotion: Option[PromotableRole]) = //todo
     promotion match {
       case None                                 => true
       case Some(Lance | Rook | Knight | Bishop) => true
@@ -154,8 +162,8 @@ abstract class Variant private[variant] (
 
   protected def pawnsOnPromotionRank(board: Board, color: Color) = {
     board.pieces.exists {
-      case (pos, Piece(c, r)) if c == color && r == Pawn && pos.y == color.promotablePawnY => true
-      case _                                                                               => false
+      case (pos, Piece(c, r)) if c == color && r == Pawn && pos.y == color.backrankY => true
+      case _                                                                         => false
     }
   }
 
@@ -199,7 +207,14 @@ object Variant {
   val all = List(
     Standard,
     Crazyhouse,
-    FromPosition
+    Chess960,
+    FromPosition,
+    KingOfTheHill,
+    ThreeCheck,
+    Antichess,
+    Atomic,
+    Horde,
+    RacingKings
   )
   val byId = all map { v =>
     (v.id, v)
@@ -230,18 +245,23 @@ object Variant {
     chess.variant.FromPosition
   )
 
-  private[variant] def symmetricRank(rank: IndexedSeq[Role]): Map[Pos, Piece] =
-    (for (y <- Seq(1, 2, 7, 8); x <- 1 to 8) yield {
+  private[variant] def symmetricRank(rank1: IndexedSeq[Role], rank2: IndexedSeq[Role]): Map[Pos, Piece] =
+    (for (y <- Seq(1, 3, 7, 9); x <- 1 to 9) yield {
       posAt(x, y) map { pos =>
         (
           pos,
           y match {
-            case 1 => White - rank(x - 1)
-            case 2 => White.pawn
+            case 1 => White - rank1(x - 1)
+            case 3 => White.pawn
             case 7 => Black.pawn
-            case 8 => Black - rank(x - 1)
+            case 9 => Black - rank1(x - 1)
           }
         )
       }
-    }).flatten.toMap
+    }).flatten.toMap ++ Map(
+      posAt(2, 2).get -> (White - rank2(1)),
+      posAt(8, 2).get -> (White - rank2(0)),
+      posAt(2, 8).get -> (Black - rank2(0)),
+      posAt(8, 8).get -> (Black - rank2(1))
+    )
 }

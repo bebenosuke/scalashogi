@@ -9,18 +9,27 @@ sealed trait Color {
   val unary_! : Color
 
   val passablePawnY: Int
-  val promotablePawnY: Int
+  val promotableZone: List[Int]
   val backrankY: Int
+  val backrankY2: Int
 
   val letter: Char
   val name: String
 
-  def pawn   = this - Pawn
-  def bishop = this - Bishop
-  def knight = this - Knight
-  def lance  = this - Lance
-  def rook   = this - Rook
-  def king   = this - King
+  def pawn           = this - Pawn
+  def gold           = this - Gold
+  def silver         = this - Silver
+  def lance          = this - Lance
+  def bishop         = this - Bishop
+  def knight         = this - Knight
+  def rook           = this - Rook
+  def tokin          = this - Tokin
+  def dragon         = this - Dragon
+  def horse          = this - Horse
+  def promotedSilver = this - PromotedSilver
+  def promotedKnight = this - PromotedKnight
+  def promotedLance  = this - PromotedLance
+  def king           = this - King
 
   val white = this == Color.White
   val black = this == Color.Black
@@ -57,9 +66,10 @@ object Color {
 
     lazy val unary_! = Black
 
-    val passablePawnY   = 5
-    val promotablePawnY = 8
-    val backrankY       = 1
+    val passablePawnY  = 5
+    val promotableZone = List(7, 8, 9)
+    val backrankY      = 9
+    val backrankY2     = 8
 
     val letter = 'w'
     val name   = "white"
@@ -71,9 +81,10 @@ object Color {
 
     val unary_! = White
 
-    val passablePawnY   = 4
-    val promotablePawnY = 1
-    val backrankY       = 8
+    val passablePawnY  = 4
+    val promotableZone = List(1, 2, 3)
+    val backrankY      = 1
+    val backrankY2     = 2
 
     val letter = 'b'
     val name   = "black"

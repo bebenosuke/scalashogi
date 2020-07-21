@@ -1,7 +1,7 @@
 package chess
 
 import format.Uci
-import Pos.posAt
+//import Pos.posAt
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ArrayBuffer
@@ -12,7 +12,7 @@ final case class Actor(
     board: Board
 ) {
 
-  import Actor._
+  //import Actor._
 
   lazy val moves: List[Move] = kingSafetyMoveFilter(trustedMoves(board.variant.allowsCastling))
 
@@ -56,10 +56,20 @@ final case class Actor(
       case King if withCastle => shortRange(King.dirs) ::: castle
       case King               => shortRange(King.dirs)
     }
+    def maybePromote(m: Move): Option[Move] =
+      if (
+        piece.role.isInstanceOf[PromotableRole] &&
+        ((m.color.promotableZone contains m.orig.y) || (m.color.promotableZone contains m.dest.y))
+      )
+        (m.after promote m.dest) map { b2 =>
+          m.copy(after = b2, promotion = Some(Pawn))
+        }
+      else Some(m)
 
+    return moves flatMap maybePromote
     // We apply the current game variant's effects if there are any so that we can accurately decide if the king would
     // be in danger after the move was made.
-    if (board.variant.hasMoveEffects) moves map (_.applyVariantEffect) else moves
+    //if (board.variant.hasMoveEffects) moves map (_.applyVariantEffect) else moves
   }
 
   lazy val destinations: List[Pos] = moves map (_.dest)
